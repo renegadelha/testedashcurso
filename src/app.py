@@ -7,7 +7,8 @@ server = app.server #server heroku/render reconhecer a app
 #app.server.config['SQLALCHEMY_DATABASE_UTI'] =  'postgres://renegadelha:slPivjRyiDdTsJcnKiP5LNMBLLHhHNcc@dpg-chfq67bhp8u065r7hqi0-a.oregon-postgres.render.com/dbacesso'
 
 usuarios =  [{'id': 1, 'login': 'rene','nome':'rene de sousa'}, {'id': 2, 'login': 'ze','nome':'jose da silva'}]
-senhas = {'rene':'pass1', 'ze':'pass2'}
+senhas = {'rene':'rene', 'ze':'pass2'}
+produtos = {'rene':[],'ze':[]}
 
 app.layout = html.Div(children=[
     html.H1(children='Meu primeiro projeto', className='banner'),
@@ -36,8 +37,64 @@ app.layout = html.Div(children=[
                                         )
                                         ])
                      )
+    ,
+    html.Br(),
+    html.Div(children=[
+            html.H3('Login')
+        ]),
+        html.Div(['Login:',
+                dcc.Input(id='loginValid',  type='text'),
+                ])
+                ,
+        html.Div(['Senha:',
+                dcc.Input(id='senhaValid',type='password'),
+                html.Button(id='fazerLogin', n_clicks=0, children='Logar')
+                ])
+        ,
 
+        html.Div(id='menuLogado',
+                         children=[]
+                         )
 ])
+
+@app.callback(
+    Output('menuLogado', 'children'),
+    Input('fazerLogin', 'n_clicks'),
+    State('loginValid', 'value'),
+    State('senhaValid', 'value'),
+    prevent_initial_call=True
+
+)
+def logar(n_clicks, login, senha):
+    global usuarios
+    global senhas
+
+    if login == None or senha == None:
+        raise exceptions.PreventUpdate
+
+    elif not login == None and not senha == None:
+
+        sucesso = False
+        for user in usuarios:
+            if user['login'] == login:
+                if senhas[login] == senha:
+                    sucesso = True
+
+        if sucesso:
+            return html.Div(children=[
+                html.Br(),
+                html.P(children='1-Cadastrar Produto'),
+                html.P(children='1-Cadastrar Produto'),
+                html.P(children='1-Cadastrar Produto'),
+                html.P(children='1-Cadastrar Produto'),
+                html.P(children='1-Cadastrar Produto'),
+
+            ])
+        else:
+            return html.Div(children=[
+                html.A(style={'color':'red'}, children='Usuário ou Senha incorreta')
+            ])
+
 
 @app.callback(
     Output('users_output', 'children'),
@@ -51,12 +108,9 @@ app.layout = html.Div(children=[
 def update_table(n_clicks, inputNomeCompleto, inputLogin, inputSenha):
     global usuarios
     global senhas
+    global produtos
 
     if len(inputNomeCompleto) > 0 and len(inputLogin) > 0 and len(inputSenha) > 0:
-        print(inputNomeCompleto)
-        print(inputLogin)
-        print(inputSenha)
-
         if len(usuarios) == 0:
             id = 0
         else:
@@ -64,6 +118,7 @@ def update_table(n_clicks, inputNomeCompleto, inputLogin, inputSenha):
 
         usuarios.append({'id': id, 'login': inputLogin,'nome':inputNomeCompleto})
         senhas[inputLogin] = inputSenha
+        produtos[inputLogin] = []
 
         child = html.Div([
             dash_table.DataTable(
