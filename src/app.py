@@ -4,8 +4,6 @@ from dash.dependencies import Input, Output
 app = Dash(__name__)
 server = app.server #server heroku/render reconhecer a app
 
-#app.server.config['SQLALCHEMY_DATABASE_UTI'] =  'postgres://renegadelha:slPivjRyiDdTsJcnKiP5LNMBLLHhHNcc@dpg-chfq67bhp8u065r7hqi0-a.oregon-postgres.render.com/dbacesso'
-
 usuarios =  [{'id': 1, 'login': 'rene','nome':'rene de sousa'}, {'id': 2, 'login': 'ze','nome':'jose da silva'}]
 senhas = {'rene':'rene', 'ze':'pass2'}
 produtos = {'rene':[],'ze':[]}
